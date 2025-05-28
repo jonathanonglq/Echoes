@@ -71,6 +71,10 @@ def load_data():
 
     return df
 
+@st.cache_data(show_spinner="Loading messages from AWS S3...", ttl=3600)
+def cached_load_data():
+    return load_data()
+
 # --- Configuration ---
 USERNAME = st.secrets["USERNAME"]
 PASSWORD = st.secrets["PASSWORD"]
@@ -83,7 +87,7 @@ if "logged_in" not in st.session_state:
 
 # --- Login Interface ---
 if not st.session_state.logged_in:
-    st.title("🔐 Welcome to Our Private Conversation App")
+    st.title("🍋 Welcome to LimOngTea Conversations!")
     st.subheader("Please log in to continue")
 
     with st.form("login_form"):
@@ -100,7 +104,7 @@ if not st.session_state.logged_in:
                 st.error("❌ Invalid credentials")
 else:
 
-    df = load_data()
+    df = cached_load_data()
 
     df['content'] = df['content'].apply(lambda x: decode_message(x))
     df['word_count'] = df['content'].str.split().str.len()

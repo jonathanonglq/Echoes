@@ -67,6 +67,7 @@ def load_data():
     df_temp2["timestamp"] = pd.to_datetime(df_temp2['timestamp'],unit='ms')
     df_temp2.columns = df_temp.columns
 
+    df_temp['content'] = df_temp['content'].apply(lambda x: decode_message(x))
     df = pd.concat([df_temp, df_temp2]).sort_values(by = 'timestamp_ms', ascending = False).reset_index(drop = True)
 
     return df
@@ -106,7 +107,6 @@ else:
 
     df = cached_load_data()
 
-    df['content'] = df['content'].apply(lambda x: decode_message(x))
     df['word_count'] = df['content'].str.split().str.len()
     df['word_count'] = df['word_count'].fillna(0)
 

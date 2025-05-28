@@ -67,7 +67,7 @@ def load_data():
     # df_temp2["timestamp"] = pd.to_datetime(df_temp2['timestamp'],unit='ms')
     # df_temp2.columns = df_temp.columns
 
-    # df_temp['content'] = df_temp['content'].apply(lambda x: decode_message(x))
+    df_temp['content'] = df_temp['content'].apply(lambda x: decode_message(x))
     # df = pd.concat([df_temp, df_temp2]).sort_values(by = 'timestamp_ms', ascending = False).reset_index(drop = True)
 
     return df_temp

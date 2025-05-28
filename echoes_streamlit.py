@@ -61,7 +61,7 @@ def load_data():
 
     temp_key = [obj["Key"] for obj in response.get("Contents", []) if obj["Key"].startswith("X")]
     obj = s3.get_object(Bucket=st.secrets["BUCKET_NAME"], Key=temp_key[0])
-    json_temp = json.load(obj['Body'].read())['messages']
+    json_temp = json.loads(obj['Body'].read())['messages']
 
     df_temp2 = pd.json_normalize(json_temp)[["senderName","timestamp","text"]]
     df_temp2["timestamp"] = pd.to_datetime(df_temp2['timestamp'],unit='ms')

@@ -44,6 +44,14 @@ def decode_message(message):
 
     return ' '.join(words)
 
+def remove_invalid_unicode(message):
+    if not isinstance(message, str):
+        return message
+    try:
+        return message.encode('utf-16','surrogatepass').decode('utf-16')
+    except:
+        return message.encode('utf-8','ignore').decode('utf-8')
+    
 def load_data():
 
     response = s3.list_objects_v2(Bucket=st.secrets["BUCKET_NAME"])
@@ -66,6 +74,8 @@ def load_data():
     df_temp2 = pd.json_normalize(json_temp)[["senderName","timestamp","text"]]
     df_temp2["timestamp"] = pd.to_datetime(df_temp2['timestamp'],unit='ms')
     df_temp2.columns = df_temp.columns
+
+    df_temp2['content'] = df_temp2['content'].apply(remove_invalid_unicode)
 
     # df_temp['content'] = df_temp['content'].apply(lambda x: decode_message(x))
     # df = pd.concat([df_temp, df_temp2]).sort_values(by = 'timestamp_ms', ascending = False).reset_index(drop = True)

@@ -105,7 +105,8 @@ if not st.session_state.logged_in:
                 st.error("❌ Invalid credentials")
 else:
 
-    df = cached_load_data()
+    # df = cached_load_data()
+    df = load_data()
 
     df['word_count'] = df['content'].str.split().str.len()
     df['word_count'] = df['word_count'].fillna(0)

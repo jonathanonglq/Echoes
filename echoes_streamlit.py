@@ -47,17 +47,17 @@ def decode_message(message):
 def load_data():
 
     response = s3.list_objects_v2(Bucket=st.secrets["BUCKET_NAME"])
-    # json_keys = [obj["Key"] for obj in response.get("Contents", []) if obj["Key"].startswith("message")]
+    json_keys = [obj["Key"] for obj in response.get("Contents", []) if obj["Key"].startswith("message")]
 
-    # json_files = []
+    json_files = []
 
-    # for key in json_keys:
-    #     obj = s3.get_object(Bucket=st.secrets["BUCKET_NAME"], Key=key)
-    #     raw_bytes = obj['Body'].read()
-    #     json_files += json.loads(raw_bytes)['messages']
+    for key in json_keys:
+        obj = s3.get_object(Bucket=st.secrets["BUCKET_NAME"], Key=key)
+        raw_bytes = obj['Body'].read()
+        json_files += json.loads(raw_bytes)['messages']
 
-    # df_temp = pd.json_normalize(json_files).iloc[:,:3]
-    # df_temp['timestamp_ms'] = pd.to_datetime(df_temp['timestamp_ms'],unit='ms')
+    df_temp = pd.json_normalize(json_files).iloc[:,:3]
+    df_temp['timestamp_ms'] = pd.to_datetime(df_temp['timestamp_ms'],unit='ms')
 
     temp_key = [obj["Key"] for obj in response.get("Contents", []) if obj["Key"].startswith("X")]
     obj = s3.get_object(Bucket=st.secrets["BUCKET_NAME"], Key=temp_key[0])

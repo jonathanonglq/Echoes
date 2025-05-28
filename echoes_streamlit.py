@@ -74,6 +74,8 @@ def load_data():
 # --- Configuration ---
 USERNAME = st.secrets["USERNAME"]
 PASSWORD = st.secrets["PASSWORD"]
+HER_NAME = st.secrets["HER_NAME"]
+HIS_NAME = st.secrets["HIS_NAME"]
 
 # --- Login State ---
 if "logged_in" not in st.session_state:
@@ -111,11 +113,11 @@ else:
     overview_kpi1.metric("Total Number of Messages", f"{len(df['word_count']):,.0f}")
     overview_kpi2.metric("Total Number of Words", f"{sum(df['word_count']):,.0f}")
     overview_kpi3, overview_kpi4 = st.columns(2)
-    overview_kpi3.metric("Number of Messages by Her", f"{sum(df['sender_name'] == 'Xuting Lim'):,.0f}")
-    overview_kpi4.metric("Number of Words by Her", f"{sum(df[df['sender_name'] == 'Xuting Lim']['word_count']):,.0f}")
+    overview_kpi3.metric("Number of Messages by Her", f"{sum(df['sender_name'] == HER_NAME):,.0f}")
+    overview_kpi4.metric("Number of Words by Her", f"{sum(df[df['sender_name'] == HER_NAME]['word_count']):,.0f}")
     overview_kpi5, overview_kpi6 = st.columns(2)
-    overview_kpi5.metric("Number of Messages by Him", f"{sum(df['sender_name'] == 'Jonathan Ong'):,.0f}")
-    overview_kpi6.metric("Number of Words by Him", f"{sum(df[df['sender_name'] == 'Jonathan Ong']['word_count']):,.0f}")
+    overview_kpi5.metric("Number of Messages by Him", f"{sum(df['sender_name'] == HIS_NAME):,.0f}")
+    overview_kpi6.metric("Number of Words by Him", f"{sum(df[df['sender_name'] == HIS_NAME]['word_count']):,.0f}")
 
 
     st.markdown("---")
@@ -153,7 +155,7 @@ else:
     st.markdown("---")
     st.markdown("### 💬 Words That Matter")
 
-    filter_input = st.text_input("Filter messages containing word(s):", placeholder="e.g. love, food, trip")
+    filter_input = st.text_input("Filter messages containing word(s):", placeholder="e.g. eat, pray, love")
 
     df_view = df[['timestamp_ms', 'sender_name', 'content', 'word_count']].copy()
     df_view.columns = ['Timestamp', 'Sender', 'Message', 'Word Count']

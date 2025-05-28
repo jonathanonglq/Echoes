@@ -47,30 +47,30 @@ def decode_message(message):
 def load_data():
 
     response = s3.list_objects_v2(Bucket=st.secrets["BUCKET_NAME"])
-    json_keys = [obj["Key"] for obj in response.get("Contents", []) if obj["Key"].startswith("message")]
+    # json_keys = [obj["Key"] for obj in response.get("Contents", []) if obj["Key"].startswith("message")]
 
-    json_files = []
+    # json_files = []
 
-    for key in json_keys:
-        obj = s3.get_object(Bucket=st.secrets["BUCKET_NAME"], Key=key)
-        raw_bytes = obj['Body'].read()
-        json_files += json.loads(raw_bytes)['messages']
+    # for key in json_keys:
+    #     obj = s3.get_object(Bucket=st.secrets["BUCKET_NAME"], Key=key)
+    #     raw_bytes = obj['Body'].read()
+    #     json_files += json.loads(raw_bytes)['messages']
 
-    df_temp = pd.json_normalize(json_files).iloc[:,:3]
-    df_temp['timestamp_ms'] = pd.to_datetime(df_temp['timestamp_ms'],unit='ms')
+    # df_temp = pd.json_normalize(json_files).iloc[:,:3]
+    # df_temp['timestamp_ms'] = pd.to_datetime(df_temp['timestamp_ms'],unit='ms')
 
-    # temp_key = [obj["Key"] for obj in response.get("Contents", []) if obj["Key"].startswith("X")]
-    # obj = s3.get_object(Bucket=st.secrets["BUCKET_NAME"], Key=temp_key[0])
-    # json_temp = json.loads(obj['Body'].read())['messages']
+    temp_key = [obj["Key"] for obj in response.get("Contents", []) if obj["Key"].startswith("X")]
+    obj = s3.get_object(Bucket=st.secrets["BUCKET_NAME"], Key=temp_key[0])
+    json_temp = json.loads(obj['Body'].read())['messages']
 
-    # df_temp2 = pd.json_normalize(json_temp)[["senderName","timestamp","text"]]
-    # df_temp2["timestamp"] = pd.to_datetime(df_temp2['timestamp'],unit='ms')
-    # df_temp2.columns = df_temp.columns
+    df_temp2 = pd.json_normalize(json_temp)[["senderName","timestamp","text"]]
+    df_temp2["timestamp"] = pd.to_datetime(df_temp2['timestamp'],unit='ms')
+    df_temp2.columns = df_temp.columns
 
-    df_temp['content'] = df_temp['content'].apply(lambda x: decode_message(x))
+    # df_temp['content'] = df_temp['content'].apply(lambda x: decode_message(x))
     # df = pd.concat([df_temp, df_temp2]).sort_values(by = 'timestamp_ms', ascending = False).reset_index(drop = True)
 
-    return df_temp
+    return df_temp2
 
 @st.cache_data(show_spinner="Loading messages from AWS S3...", ttl=3600)
 def cached_load_data():

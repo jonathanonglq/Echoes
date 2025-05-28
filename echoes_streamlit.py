@@ -183,5 +183,5 @@ else:
         st.dataframe(filtered_df, use_container_width=True)
 
     else:
-        filtered_df = df_view
+        filtered_df = df_view[[True]*len(df_view)]
         st.dataframe(filtered_df, use_container_width=True)

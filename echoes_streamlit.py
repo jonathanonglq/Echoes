@@ -183,6 +183,5 @@ else:
         st.dataframe(filtered_df, use_container_width=True)
 
     else:
-        df_view = df_view.sort_values(by="Timestamp", ascending = False)
         filtered_df = df_view
         st.dataframe(filtered_df, use_container_width=True)

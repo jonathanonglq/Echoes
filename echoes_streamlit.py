@@ -180,10 +180,9 @@ else:
         keywords = [w.strip().lower() for w in filter_input.split(',')]
         mask = df_view['Message'].fillna("").str.lower().apply(lambda text: any(word in text for word in keywords))
         filtered_df = df_view[mask]
+        st.dataframe(filtered_df, use_container_width=True)
+
     else:
         df_view = df_view.sort_values(by="Timestamp", ascending = False)
         filtered_df = df_view
-
-    # Show filtered table
-    print(filtered_df.head())
-    st.dataframe(filtered_df, use_container_width=True)
+        st.dataframe(filtered_df, use_container_width=True)

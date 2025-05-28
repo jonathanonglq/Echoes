@@ -115,8 +115,8 @@ if not st.session_state.logged_in:
                 st.error("❌ Invalid credentials")
 else:
 
-    # df = cached_load_data()
-    df = load_data()
+    df = cached_load_data()
+    # df = load_data()
 
     df['word_count'] = df['content'].str.split().str.len()
     df['word_count'] = df['word_count'].fillna(0)
@@ -180,8 +180,7 @@ else:
         keywords = [w.strip().lower() for w in filter_input.split(',')]
         mask = df_view['Message'].fillna("").str.lower().apply(lambda text: any(word in text for word in keywords))
         filtered_df = df_view[mask]
-        st.dataframe(filtered_df, use_container_width=True)
-
     else:
-        filtered_df = df_view[[True]*len(df_view)]
-        st.dataframe(filtered_df, use_container_width=True)
+        filtered_df = df_view
+    
+    st.dataframe(filtered_df, use_container_width=True)

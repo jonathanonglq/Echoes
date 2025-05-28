@@ -59,18 +59,18 @@ def load_data():
     df_temp = pd.json_normalize(json_files).iloc[:,:3]
     df_temp['timestamp_ms'] = pd.to_datetime(df_temp['timestamp_ms'],unit='ms')
 
-    temp_key = [obj["Key"] for obj in response.get("Contents", []) if obj["Key"].startswith("X")]
-    obj = s3.get_object(Bucket=st.secrets["BUCKET_NAME"], Key=temp_key[0])
-    json_temp = json.loads(obj['Body'].read())['messages']
+    # temp_key = [obj["Key"] for obj in response.get("Contents", []) if obj["Key"].startswith("X")]
+    # obj = s3.get_object(Bucket=st.secrets["BUCKET_NAME"], Key=temp_key[0])
+    # json_temp = json.loads(obj['Body'].read())['messages']
 
-    df_temp2 = pd.json_normalize(json_temp)[["senderName","timestamp","text"]]
-    df_temp2["timestamp"] = pd.to_datetime(df_temp2['timestamp'],unit='ms')
-    df_temp2.columns = df_temp.columns
+    # df_temp2 = pd.json_normalize(json_temp)[["senderName","timestamp","text"]]
+    # df_temp2["timestamp"] = pd.to_datetime(df_temp2['timestamp'],unit='ms')
+    # df_temp2.columns = df_temp.columns
 
-    df_temp['content'] = df_temp['content'].apply(lambda x: decode_message(x))
-    df = pd.concat([df_temp, df_temp2]).sort_values(by = 'timestamp_ms', ascending = False).reset_index(drop = True)
+    # df_temp['content'] = df_temp['content'].apply(lambda x: decode_message(x))
+    # df = pd.concat([df_temp, df_temp2]).sort_values(by = 'timestamp_ms', ascending = False).reset_index(drop = True)
 
-    return df
+    return df_temp
 
 @st.cache_data(show_spinner="Loading messages from AWS S3...", ttl=3600)
 def cached_load_data():
@@ -174,4 +174,5 @@ else:
         filtered_df = df_view
 
     # Show filtered table
+    print(filtered_df.head())
     st.dataframe(filtered_df, use_container_width=True)

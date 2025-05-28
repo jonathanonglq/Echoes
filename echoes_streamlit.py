@@ -74,7 +74,7 @@ def load_data():
 
     df_temp2 = pd.json_normalize(json_temp)[["senderName","timestamp","text"]]
     df_temp2["timestamp"] = pd.to_datetime(df_temp2['timestamp'],unit='ms')
-    df_temp2['content'] = df_temp2['content'].apply(remove_invalid_unicode)
+    df_temp2['text'] = df_temp2['text'].apply(remove_invalid_unicode)
 
     df_temp2.columns = df_temp.columns
 

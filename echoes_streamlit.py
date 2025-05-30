@@ -173,14 +173,25 @@ else:
 
     filter_input = st.text_input("Filter messages containing word(s):", placeholder="e.g. eat, pray, love")
 
+    min_date = df['timestamp_ms'].min().date()
+    max_date = df['timestamp_ms'].max().date()
+
+    col1, col2 = st.columns(2)
+    start_date = col1.date_input("Start Date", value=min_date, min_value=min_date, max_value=max_date)
+    end_date = col2.date_input("End Date", value=max_date, min_value=min_date, max_value=max_date)
+
     df_view = df[['timestamp_ms', 'sender_name', 'content', 'word_count']].copy()
     df_view.columns = ['Timestamp', 'Sender', 'Message', 'Word Count']
 
+    date_mask = (df_view['Timestamp'].dt.date >= start_date) & (df_view['Timestamp'].dt.date <= end_date)
+
     if filter_input.strip():
         keywords = [w.strip().lower() for w in filter_input.split(',')]
-        mask = df_view['Message'].fillna("").str.lower().apply(lambda text: any(word in text for word in keywords))
-        filtered_df = df_view[mask]
+        keyword_mask = df_view['Message'].fillna("").str.lower().apply(lambda text: any(word in text for word in keywords))
     else:
-        filtered_df = df_view
+        keyword_mask = True
     
+    combined_mask = date_mask & keyword_mask
+    filtered_df = df_view[combined_mask]
+
     st.dataframe(filtered_df, use_container_width=True)

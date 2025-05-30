@@ -17,9 +17,9 @@ s3 = boto3.client(
     region_name=st.secrets["AWS_DEFAULT_REGION"]
 )
     
-def easter_egg():
+def easter_egg(emoji):
     rain(
-        emoji="🎈",
+        emoji=emoji,
         font_size=54,
         falling_speed=5,
         animation_length="infinite",
@@ -204,6 +204,6 @@ else:
     filtered_df = df_view[combined_mask]
 
     if (start_date == date(2020, 1, 19) and end_date == date(2024, 11, 26) and filter_input.strip().lower() == "love"):
-        easter_egg()
+        easter_egg("❤️")
 
     st.dataframe(filtered_df, use_container_width=True)

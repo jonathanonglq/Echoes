@@ -177,8 +177,8 @@ else:
     max_date = df['timestamp_ms'].max().date()
 
     col1, col2 = st.columns(2)
-    start_date = col1.date_input("Start Date", value=min_date, min_value=min_date, max_value=max_date)
-    end_date = col2.date_input("End Date", value=max_date, min_value=min_date, max_value=max_date)
+    start_date = col1.date_input("Start Date:", value=min_date, min_value=min_date, max_value=max_date)
+    end_date = col2.date_input("End Date:", value=max_date, min_value=min_date, max_value=max_date)
 
     df_view = df[['timestamp_ms', 'sender_name', 'content', 'word_count']].copy()
     df_view.columns = ['Timestamp', 'Sender', 'Message', 'Word Count']
@@ -193,5 +193,8 @@ else:
     
     combined_mask = date_mask & keyword_mask
     filtered_df = df_view[combined_mask]
+
+    if (start_date == date(2020, 1, 19) and end_date == date(2024, 11, 26) and filter_input.strip().lower() == "love"):
+        st.balloons()
 
     st.dataframe(filtered_df, use_container_width=True)

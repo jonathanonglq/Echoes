@@ -5,3 +5,4 @@ s3fs==2025.3.2
 st-files-connection
 boto3
 altair==5.4.1
+streamlit-extras==0.7.1

@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import altair as alt
-from datetime import date
+from datetime import date, timedelta
 import json
 import re
 import boto3
@@ -89,6 +89,7 @@ def load_data():
 
     df = pd.concat([df_temp, df_temp2]).sort_values(by = 'timestamp_ms', ascending = False).reset_index(drop = True)
 
+    df['timestamp_ms'] = df['timestamp_ms'] + timedelta(hours = 8)
     return df
 
 @st.cache_data(show_spinner="Loading messages from AWS S3...", ttl=3600)
@@ -149,7 +150,6 @@ else:
 
     options = ["Day","Month","Year"]
     group_option = st.segmented_control("Group messages by:", options, default = "Month")
-    df['timestamp_ms'] = df['timestamp_ms'] + 8 * 3600 * 1000
     df['time_group'] = df['timestamp_ms'].dt.to_period('M').astype(str)
 
     # Derive time_group column based on selection

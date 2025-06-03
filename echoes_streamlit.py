@@ -149,6 +149,7 @@ else:
 
     options = ["Day","Month","Year"]
     group_option = st.segmented_control("Group messages by:", options, default = "Month")
+    df['timestamp_ms'] = df['timestamp_ms'] + 8 * 3600 * 1000
     df['time_group'] = df['timestamp_ms'].dt.to_period('M').astype(str)
 
     # Derive time_group column based on selection

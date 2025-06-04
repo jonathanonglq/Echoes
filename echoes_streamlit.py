@@ -181,7 +181,6 @@ else:
     st.markdown("---")
     st.markdown("### 💬 Words That Matter")
 
-    st.markdown("### 🧭 Choose Your Filter Mode")
     filter_mode = st.radio("Select how you want to filter messages:", ["Keyword & Date", "Message Index"])
 
     df_view = df[['timestamp_ms', 'sender_name', 'content', 'word_count']].copy()

@@ -221,3 +221,10 @@ else:
         main_index = col3.number_input("Main Index", min_value=0, max_value=len(df_view)-1, value=0, step=1)
         n_before = col4.number_input("Number of Messages Before", min_value=0, max_value=main_index, value=0, step=1)
         n_after = col5.number_input("Number of Messages After", min_value=0, max_value=len(df_view)-1-main_index, value=0, step=1)
+
+        start_idx = max(main_index - n_before, 0)
+        end_idx = min(main_index + n_after + 1, len(df_view))
+
+        filtered_df = df_view.iloc[start_idx:end_idx]
+
+        st.dataframe(filtered_df, use_container_width=True)

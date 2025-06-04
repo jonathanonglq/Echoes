@@ -206,11 +206,6 @@ else:
         else:
             keyword_mask = True
 
-        col3, col4, col5 = st.columns(3)
-        main_index = col3.number_input("Main Message Index", min_value=0, max_value=len(df)-1, step=1)
-        n_before = st.number_input("Show N messages before", min_value=0, max_value=main_index, value=2, step=1)
-        n_after = st.number_input("Show N messages after", min_value=0, max_value=len(df)-1-main_index, value=2, step=1)
-
         combined_mask = date_mask & keyword_mask
         filtered_df = df_view[combined_mask]
 
@@ -223,6 +218,6 @@ else:
 
         col3, col4, col5 = st.columns(3)
         
-        main_index = col3.number_input("Main Index", min_value=0, max_value=len(df_view)-1, step=1)
-        n_before = col4.number_input("Number of Messages Before", min_value=0, max_value=main_index, value=2, step=1)
-        n_after = col5.number_input("Number of Messages After", min_value=0, max_value=len(df_view)-1-main_index, value=2, step=1)
+        main_index = col3.number_input("Main Index", min_value=0, max_value=len(df_view)-1, value=0, step=1)
+        n_before = col4.number_input("Number of Messages Before", min_value=0, max_value=main_index, value=0, step=1)
+        n_after = col5.number_input("Number of Messages After", min_value=0, max_value=len(df_view)-1-main_index, value=0, step=1)

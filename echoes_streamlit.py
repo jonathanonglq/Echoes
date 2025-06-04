@@ -181,30 +181,48 @@ else:
     st.markdown("---")
     st.markdown("### 💬 Words That Matter")
 
-    filter_input = st.text_input("Filter messages containing word(s):", placeholder="e.g. eat, pray, love")
-
-    min_date = df['timestamp_ms'].min().date()
-    max_date = df['timestamp_ms'].max().date()
-
-    col1, col2 = st.columns(2)
-    start_date = col1.date_input("Start Date:", value=min_date, min_value=min_date, max_value=max_date)
-    end_date = col2.date_input("End Date:", value=max_date, min_value=min_date, max_value=max_date)
+    st.markdown("### 🧭 Choose Your Filter Mode")
+    filter_mode = st.radio("Select how you want to filter messages:", ["Keyword & Date", "Message Index"])
 
     df_view = df[['timestamp_ms', 'sender_name', 'content', 'word_count']].copy()
     df_view.columns = ['Timestamp', 'Sender', 'Message', 'Word Count']
 
-    date_mask = (df_view['Timestamp'].dt.date >= start_date) & (df_view['Timestamp'].dt.date <= end_date)
+    if filter_mode == "Keyword & Date":
 
-    if filter_input.strip():
-        keywords = [w.strip().lower() for w in filter_input.split(',')]
-        keyword_mask = df_view['Message'].fillna("").str.lower().apply(lambda text: any(word in text for word in keywords))
-    else:
-        keyword_mask = True
-    
-    combined_mask = date_mask & keyword_mask
-    filtered_df = df_view[combined_mask]
+        filter_input = st.text_input("Filter messages containing word(s):", placeholder="e.g. eat, pray, love")
 
-    if (start_date == date(2020, 1, 19) and end_date == date(2024, 11, 26) and filter_input.strip().lower() == "love"):
-        easter_egg("❤️")
+        min_date = df['timestamp_ms'].min().date()
+        max_date = df['timestamp_ms'].max().date()
 
-    st.dataframe(filtered_df, use_container_width=True)
+        col1, col2 = st.columns(2)
+        start_date = col1.date_input("Start Date:", value=min_date, min_value=min_date, max_value=max_date)
+        end_date = col2.date_input("End Date:", value=max_date, min_value=min_date, max_value=max_date)
+
+        date_mask = (df_view['Timestamp'].dt.date >= start_date) & (df_view['Timestamp'].dt.date <= end_date)
+
+        if filter_input.strip():
+            keywords = [w.strip().lower() for w in filter_input.split(',')]
+            keyword_mask = df_view['Message'].fillna("").str.lower().apply(lambda text: any(word in text for word in keywords))
+        else:
+            keyword_mask = True
+
+        col3, col4, col5 = st.columns(3)
+        main_index = col3.number_input("Main Message Index", min_value=0, max_value=len(df)-1, step=1)
+        n_before = st.number_input("Show N messages before", min_value=0, max_value=main_index, value=2, step=1)
+        n_after = st.number_input("Show N messages after", min_value=0, max_value=len(df)-1-main_index, value=2, step=1)
+
+        combined_mask = date_mask & keyword_mask
+        filtered_df = df_view[combined_mask]
+
+        if (start_date == date(2020, 1, 19) and end_date == date(2024, 11, 26) and filter_input.strip().lower() == "love"):
+            easter_egg("❤️")
+            
+        st.dataframe(filtered_df, use_container_width=True)
+
+    elif filter_mode == "Message Index":
+
+        col3, col4, col5 = st.columns(3)
+        
+        main_index = col3.number_input("Main Index", min_value=0, max_value=len(df_view)-1, step=1)
+        n_before = col4.number_input("Number of Messages Before", min_value=0, max_value=main_index, value=2, step=1)
+        n_after = col5.number_input("Number of Messages After", min_value=0, max_value=len(df_view)-1-main_index, value=2, step=1)
